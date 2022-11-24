@@ -12,6 +12,7 @@ class Board:
         self.screen = screen
         self.difficulty = difficulty
         self.cells = []
+        self.original_cells = []
 
         for r in range (0, ROWS):
             row = []
@@ -19,6 +20,7 @@ class Board:
                 row.append(Cell(TEMP_BOARD[r][c], r, c, self.screen))
             self.cells.append(row)
         print(self.cells)
+        self.original_cells = self.cells
 
     def draw(self):
         # draw the outline of the Sudoku grid
@@ -47,8 +49,9 @@ class Board:
                 self.cells[r][c].draw()
 
     def select(self, row, col):
-        # make selected cell
-        pass
+        # selects cell
+        self.cells[row][col].select()
+        self.cells[row][col].draw()
 
     def click(self, x, y):
         # return tuple of of cell when clicked in form of (row, col), or none
@@ -68,13 +71,18 @@ class Board:
         pass
 
     def reset_to_original(self):
-        # reset board to origianl values
-        pass
+        # reset board to original values
+        self.cells = self.original_cells
+        self.draw()
 
     def is_full(self):
         # return true or false if board is full
         # if 0 not in board:
-        pass
+        for i in self.cells:
+            for j in self.cells:
+                if j == 0:
+                    return False
+        return True
 
     def update_board(self):
         # set board to new values
@@ -86,4 +94,7 @@ class Board:
 
     def check_board(self):
         # check to see if board is solved
-        pass
+        if self.cells == SOLVED_BOARD:
+            return True
+        else:
+            return False

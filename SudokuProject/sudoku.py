@@ -143,8 +143,7 @@ if __name__ == "__main__":
         row = int(y // SQUARE_SIZE)
         col = int(x // SQUARE_SIZE)
         if row < 9 and col < 9:
-          board.cells[row][col].select()
-          board.cells[row][col].draw()
+          board.select(row, col)
 
 
         # checks for user hitting one of the buttons
