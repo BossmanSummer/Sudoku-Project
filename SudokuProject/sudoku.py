@@ -22,18 +22,45 @@ def welcome_screen():
   welcome_rect = welcome_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 200))
   screen.blit(welcome_surf, welcome_rect)
 
-  welcome_font = pygame.font.Font(None, DESC_FONT)
-  welcome_text = "Select Game Mode"
-  welcome_surf = welcome_font.render(welcome_text, 1, LINE_COLOR)
-  welcome_rect = welcome_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
-  screen.blit(welcome_surf, welcome_rect)
+  sub_font = pygame.font.Font(None, DESC_FONT)
+  sub_text = "Select Game Mode"
+  sub_surf = sub_font.render(sub_text, 1, LINE_COLOR)
+  sub_rect = sub_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+  screen.blit(sub_surf, sub_rect)
 
-  # TO DO: ADD BUTTONS
+  btn_font = pygame.font.Font(None, BTN_FONT)
 
-def game_screen():
+  levels = ["Easy", "Medium", "Hard"]
+
+
+  for i, level in enumerate(levels):
+
+    x_coord =  WIDTH // 2  + MODE_SPACER * (i - 1) + MODE_BTN_WIDTH * (i - 1)
+    btn = pygame.draw.rect(screen, BTN_COLOR,
+                           pygame.Rect(x_coord - MODE_BTN_WIDTH//2, MODE_BTN_Y - MODE_BTN_HEIGHT//2,
+                                       MODE_BTN_WIDTH, MODE_BTN_HEIGHT))
+    btn_text = level
+    btn_surf = btn_font.render(btn_text, 1, LINE_COLOR)
+    btn_rect = btn_surf.get_rect(center=(x_coord, MODE_BTN_Y))
+    screen.blit(btn_surf, btn_rect)
+
+
+def game_screen(board):
   board.draw()
 
-  # TO DO: ADD BUTTONS
+  btn_font = pygame.font.Font(None, BTN_FONT)
+
+  btns = ["Reset", "Restart", "Exit"]
+
+  for i, btn_text in enumerate(btns):
+    x_coord = WIDTH // 2 + GAME_SPACER * (i - 1) + GAME_BTN_WIDTH * (i - 1)
+    btn = pygame.draw.rect(screen, BTN_COLOR,
+                           pygame.Rect(x_coord - GAME_BTN_WIDTH // 2, GAME_BTN_Y - GAME_BTN_HEIGHT // 2,
+                                       GAME_BTN_WIDTH, GAME_BTN_HEIGHT))
+    btn_surf = btn_font.render(btn_text, 1, LINE_COLOR)
+    btn_rect = btn_surf.get_rect(center=(x_coord, GAME_BTN_Y))
+    screen.blit(btn_surf, btn_rect)
+
 
 def win_screen():
   screen.fill(BG_COLOR)
@@ -45,6 +72,18 @@ def win_screen():
   screen.blit(end_surf, end_rect)
 
 
+
+  exit_btn = pygame.draw.rect(screen, BTN_COLOR,
+                              pygame.Rect(WIDTH // 2 - END_BTN_WIDTH//2, END_BTN_Y - END_BTN_HEIGHT//2,
+                                          END_BTN_WIDTH, END_BTN_HEIGHT))
+  btn_font = pygame.font.Font(None, BTN_FONT)
+  btn_text = "EXIT"
+  btn_surf = btn_font.render(btn_text, 1, LINE_COLOR)
+  btn_rect = btn_surf.get_rect(center = (WIDTH//2, END_BTN_Y))
+  screen.blit(btn_surf, btn_rect)
+
+
+
 def lose_screen():
   screen.fill(BG_COLOR)
 
@@ -53,6 +92,15 @@ def lose_screen():
   end_surf = end_font.render(end_text, 1, LINE_COLOR)
   end_rect = end_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 200))
   screen.blit(end_surf, end_rect)
+
+  restart_btn = pygame.draw.rect(screen, BTN_COLOR,
+                                 pygame.Rect(WIDTH // 2 - END_BTN_WIDTH // 2, END_BTN_Y - END_BTN_HEIGHT // 2,
+                                             END_BTN_WIDTH, END_BTN_HEIGHT))
+  btn_font = pygame.font.Font(None, BTN_FONT)
+  btn_text = "RESTART"
+  btn_surf = btn_font.render(btn_text, 1, LINE_COLOR)
+  btn_rect = btn_surf.get_rect(center=(WIDTH // 2, END_BTN_Y))
+  screen.blit(btn_surf, btn_rect)
 
 game_playing = False
 begin_game = True
@@ -67,23 +115,81 @@ if __name__ == "__main__":
     for event in pygame.event.get():
       if event.type == pygame.MOUSEBUTTONDOWN and begin_game:
         # create different mode based on board played
-        begin_game = False
-        game_playing = True
-        mode = "easy"
-        board = Board(WIDTH, HEIGHT, screen, mode)
-        board.draw()
+        x, y = event.pos
+
+        # checks if the user clicked any of the buttons
+        if (y > MODE_BTN_Y - MODE_BTN_HEIGHT//2) and (y < MODE_BTN_Y + MODE_BTN_HEIGHT//2):
+          levels = ["Easy", "Medium", "Hard"]
+
+          for i, level in enumerate(levels):
+            x_coord = WIDTH // 2 + MODE_SPACER * (i - 1) + MODE_BTN_WIDTH * (i - 1)
+            if x > x_coord - MODE_BTN_WIDTH//2 and x < x_coord + MODE_BTN_WIDTH//2:
+              begin_game = False
+              game_playing = True
+              board = Board(WIDTH, HEIGHT, screen, level)
+
+              game_screen(board)
+
+
+
 
       if event.type == pygame.MOUSEBUTTONDOWN and game_playing:
-        x, y = event.pos
-        row = int(y // SQUARE_SIZE)
-        col = int(x // SQUARE_SIZE)
-
         for r in board.cells:
            for cell in r:
              cell.deselect()
+        x, y = event.pos
 
-        board.cells[row][col].select()
-        board.cells[row][col].draw()
+        # checks if the user clicked any of the cells
+        row = int(y // SQUARE_SIZE)
+        col = int(x // SQUARE_SIZE)
+        if row < 9 and col < 9:
+          board.cells[row][col].select()
+          board.cells[row][col].draw()
+
+
+        # checks for user hitting one of the buttons
+        if (y > GAME_BTN_Y - GAME_BTN_HEIGHT//2) and (y < GAME_BTN_Y + GAME_BTN_HEIGHT//2):
+
+          # checks if the user selected the RESET button
+          # RESET GAME HASN'T BEEN CODED
+          x_coord = WIDTH // 2 - GAME_SPACER - GAME_BTN_WIDTH
+          if x > x_coord - GAME_BTN_WIDTH//2 and x < x_coord + GAME_BTN_WIDTH//2:
+            pass
+
+          # checks if the user selected the RESTART button
+          x_coord = WIDTH // 2
+          if x > x_coord - GAME_BTN_WIDTH // 2 and x < x_coord + GAME_BTN_WIDTH // 2:
+            begin_game = True
+            game_playing = False
+            welcome_screen()
+
+          # checks if user selected the EXIT button
+          x_coord = WIDTH // 2 + GAME_SPACER + GAME_BTN_WIDTH
+          if x > x_coord - GAME_BTN_WIDTH // 2 and x < x_coord + GAME_BTN_WIDTH // 2:
+            pygame.quit()
+
+      # checks if user restarted after losing
+      if event.type == pygame.MOUSEBUTTONDOWN and lose_game:
+        x, y = event.pos
+        in_y_range = (y > END_BTN_Y - END_BTN_HEIGHT // 2) and (y < END_BTN_Y + END_BTN_HEIGHT//2)
+        in_x_range = (x > WIDTH//2 - END_BTN_WIDTH//2) and (x < WIDTH//2 + END_BTN_WIDTH//2)
+
+        if in_y_range and in_x_range:
+          begin_game = True
+          game_playing = False
+          welcome_screen()
+
+      # checks if user exitted after winning
+      if event.type == pygame.MOUSEBUTTONDOWN and win_game:
+        x, y = event.pos
+        in_y_range = (y > END_BTN_Y - END_BTN_HEIGHT // 2) and (y < END_BTN_Y + END_BTN_HEIGHT//2)
+        in_x_range = (x > WIDTH//2 - END_BTN_WIDTH//2) and (x < WIDTH//2 + END_BTN_WIDTH//2)
+
+        if in_y_range and in_x_range:
+          pygame.quit()
+
+
+
 
       if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_w:
@@ -104,7 +210,7 @@ if __name__ == "__main__":
         pygame.quit()
 
     if game_playing:
-      board.draw()
+      game_screen(board)
 
 
     pygame.display.update()
