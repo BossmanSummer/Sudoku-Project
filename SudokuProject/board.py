@@ -3,8 +3,6 @@ from vars import *
 from cell import *
 
 
-
-
 class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
@@ -94,7 +92,181 @@ class Board:
 
     def check_board(self):
         # check to see if board is solved
-        if self.cells == SOLVED_BOARD:
-            return True
-        else:
+
+        # there is sometimes more than one correct solution, so this method only works sometimes
+        # if self.cells == SOLVED_BOARD:
+        #     return True
+
+        # for rows in self.cells:
+        #     x = 0
+        #     for num in rows:
+        #         x += num
+        #     if x != 45:
+        #         return False
+        # for index in range(9):
+        #     x = 0
+        #     for rows in self.cells:
+        #         x += rows[index]
+        #     if x != 45:
+        #         return False
+
+        y = 0
+        for row in self.cells:
+            x = 0
+            for number in range(9):
+                for index in range(9):
+                    if number + 1 == row[index]:
+                        if x == 0:
+                            x = 1
+                        elif x == 1:
+                            return False
+            if x == 1:
+                y += 1
+        if y != 9:
             return False
+
+        y = 0
+        for number in range(9):
+            x = 0
+            for index in range(9):
+                for row in self.cells:
+                    if number + 1 == row[index]:
+                        if x == 0:
+                            x = 1
+                        elif x == 1:
+                            return False
+            if x == 1:
+                y += 1
+        if y != 9:
+            return False
+
+        # check squares
+
+        # top left square
+        y = 0
+        for rows in range(3):
+            x = 0
+            for columns in range(3):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # middle top square
+        y = 0
+        for rows in range(3):
+            x = 0
+            for columns in range(3, 6):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # right top square
+        y = 0
+        for rows in range(3):
+            x = 0
+            for columns in range(6, 9):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # middle left square
+        y = 0
+        for rows in range(3, 6):
+            x = 0
+            for columns in range(3):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # middle middle square
+        y = 0
+        for rows in range(3, 6):
+            x = 0
+            for columns in range(3, 6):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # middle right square
+        y = 0
+        for rows in range(3, 6):
+            x = 0
+            for columns in range(6, 9):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # bottom right square
+        y = 0
+        for rows in range(6, 9):
+            x = 0
+            for columns in range(3):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # bottom middle square
+        y = 0
+        for rows in range(6, 9):
+            x = 0
+            for columns in range(3, 6):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # bottom right square
+        y = 0
+        for rows in range(6, 9):
+            x = 0
+            for columns in range(6, 9):
+                for number in range(9):
+                    if self.cells[rows][columns] == number + 1:
+                        if x == 0:
+                            x += 1
+            if x == 3:
+                y += 1
+            elif x != 3:
+                return False
+
+        # if it makes it this far, it is true
+        return True
